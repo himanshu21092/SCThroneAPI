@@ -153,7 +153,7 @@ exports.add_new_employee = function (req, res) {
     let googleUserID = req.body.userId;
     let picture = req.body.imageUrl || "";
 
-    Employee.findOne({ 'googleUserID': googleUserID }, 'name', function (err, employee) {
+    Employee.findOne({ 'googleUserID': googleUserID }, function (err, employee) {
         if (err) res.json(err);
         if (employee) {
             res.status(409).send({
