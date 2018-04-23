@@ -178,3 +178,56 @@ exports.add_new_employee = function (req, res) {
         }
     });
 };
+
+exports.get_current_state = function (req, res) {
+    let data = {
+        queue: [],
+        currentUser: {}
+    }
+
+    Employee.findOne({ 'currentUser': true }, (err, employee) => {
+        if (err) res.json(err);
+
+        if (employee) {
+            data.currentUser = employee;
+        }
+        else {
+            data.currentUser = null;
+        }
+
+        Queue.findOne({}, (err, result) => {
+            if (err) res.json(err);
+
+            if (result) {
+                if (result.queue.length == 0) {
+                    data.queue = [];
+                    res.json(data);
+                }
+                else {
+                    let status = 0;
+                    result.queue.forEach(id => {
+                        Employee.findOne({ id: id }, (err, employee) => {
+                            if (err) res.json(err);
+
+                            if (employee) {
+                                status++;
+                                data.queue.push(employee);
+
+                                if (status == result.queue.length) {
+                                    res.json(data);
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+            else {
+                data.queue = [];
+                res.json(data);
+            }
+
+        });
+
+    });
+
+}

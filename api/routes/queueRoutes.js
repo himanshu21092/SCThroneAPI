@@ -12,7 +12,7 @@ module.exports = function (app) {
     app.route('/done/:employeeId')
         .get(queue.done)
 
+    app.route('/get-current-state/')
+        .get(queue.get_current_state)
 
-    // app.route('/check-who-inside/:taskId')
-    //     .get(queue.check_who)
 };
