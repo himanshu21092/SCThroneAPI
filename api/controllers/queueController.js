@@ -17,6 +17,11 @@ let updateCurrentUser = (empID, callback) => {
 exports.add_in_queue = function (req, res) {
     let id = req.params.employeeId;
 
+    if (id == 'undefined') {
+        res.status(500).json({status : 500, message : "Something went wrong."});
+        return;
+    }
+
     Employee.findOne({ currentUser: true }, (err, employee) => {
         if (err) res.json(err);
 
