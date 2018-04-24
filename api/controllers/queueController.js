@@ -18,7 +18,7 @@ exports.add_in_queue = function (req, res) {
     let id = req.params.employeeId;
 
     if (id == 'undefined') {
-        res.status(500).json({status : 500, message : "Something went wrong."});
+        res.status(500).json({ status: 500, message: "Something went wrong." });
         return;
     }
 
@@ -209,20 +209,23 @@ exports.get_current_state = function (req, res) {
                     res.json(data);
                 }
                 else {
-                    let status = 0;
-                    result.queue.forEach(id => {
-                        Employee.findOne({ id: id }, (err, employee) => {
-                            if (err) res.json(err);
 
-                            if (employee) {
-                                status++;
-                                data.queue.push(employee);
+                    Employee.find({ _id: { $in: result.queue } }, (err, queue) => {
+                        if (err) {
+                            res.status(500).json({
+                                message: "Database error."
+                            });
+                        }
 
-                                if (status == result.queue.length) {
-                                    res.json(data);
-                                }
-                            }
-                        });
+                        if (queue) {
+                            data.queue = queue;
+                            res.json(data);
+                        }
+                        else {
+                            res.status(500).json({
+                                message: "Something went wrong."
+                            })
+                        }
                     });
                 }
             }
